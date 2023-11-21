@@ -125,7 +125,7 @@ def simmer(r_seed,t_num,depth_point,cycles,distribution,probs):
     for f in range(0,tfr.shape[1]):
         freq = np.squeeze(tfr[:,f,:])
         med = np.median(freq[:,cfg.keeps], axis=(0,1))
-        print([f,6*med])
+        #print([f,6*med])
         tfr[:,f,:] =  freq / med   
 
     f_range = (None, 45) 
