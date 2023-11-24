@@ -28,7 +28,7 @@ cvfolds = 10
 #cvfolds = t_num
 sims = list()
 
-pt_recov = pd.DataFrame()
+bop_recov = pd.DataFrame()
 trials = list()
 whichToEval = list()
 n_cycles = 7
