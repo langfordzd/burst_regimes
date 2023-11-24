@@ -6,7 +6,7 @@ Created on Mon May  9 15:20:44 2022
 @author: zachary
 """
 #%%
-def pow_chars(electrode):
+def pow_chars_(electrode):
     
     import numpy as np
     import config
@@ -40,6 +40,29 @@ def pow_chars(electrode):
                     duration = (ind[1] - ind[0]) / config.sfreq
                     recov.append([loc[epoch],chan[epoch],ep[epoch],ids[epoch],start,end,duration])
                     count[epoch] =  count[epoch]+1
+    return recov
+#%%
+def pow_chars(loc, chan, ep, e, a, f, p, tf, ts, b, ids):
+    import config
+    from scipy import ndimage
+    min_cycs = 2
+    threshold = 6    
+    recov = []
+    ars = tf > threshold
+    labeled_image, num_features = ndimage.label(ars)
+    objs = ndimage.find_objects(labeled_image)
+    burstInds = []
+    for ob in objs:
+        burstInds.append([ob[1].start,ob[1].stop, int((ob[0].stop + ob[0].start)/2)])      
+            
+    for whichInd, ind in enumerate(burstInds):
+        if ind[0] in config.keeps-10 and ind[1] in config.keeps+10:
+            duration = ind[1]-ind[0]
+            if duration > (config.sfreq/config.freqs[ind[2]] * min_cycs):
+                start = ind[0]
+                end = ind[1]
+                duration = (ind[1] - ind[0]) / config.sfreq
+                recov.append([loc,chan,ep,ids,start,end,duration])
     return recov
 #%%
 def cycler_worker(t, toE):
