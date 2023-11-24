@@ -72,7 +72,7 @@ def cycler_worker(t, toE):
                 count = count+1
                 
     stat        = stats.spearmanr(pred[cfg.keeps],a[cfg.keeps]).correlation
-    toSend      = cfg.bop_recov[cfg.pt_recov['ids'] == ids].values.tolist()   
+    toSend      = cfg.bop_recov[cfg.bop_recov['ids'] == ids].values.tolist()   
     boc_u,boc_c   = out_and_in(recov,toSend)
     bop_u,bop_c   = out_and_in(toSend,recov)
     bop_uniq     = collect_chars_split(bop_u).dropna()
