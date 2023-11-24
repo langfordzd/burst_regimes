@@ -9,7 +9,7 @@ Created on Mon May  9 15:20:44 2022
 def pow_chars(electrode):
     
     import numpy as np
-    import config as cfg
+    import config
     from scipy import ndimage
 
     loc, chan, ep, raw, amps, freqs, phas, tfr, tfr_st_means,b,ids = zip(*electrode)
@@ -32,12 +32,12 @@ def pow_chars(electrode):
             burstInds.append([ob[1].start,ob[1].stop, int((ob[0].stop + ob[0].start)/2)])      
                 
         for whichInd, ind in enumerate(burstInds):
-            if ind[0] in cfg.keeps-10 and ind[1] in cfg.keeps+10:
+            if ind[0] in config.keeps-10 and ind[1] in config.keeps+10:
                 duration = ind[1]-ind[0]
-                if duration > (cfg.sfreq/cfg.freqs[ind[2]] * min_cycs):
+                if duration > (config.sfreq/config.freqs[ind[2]] * min_cycs):
                     start = ind[0]
                     end = ind[1]
-                    duration = (ind[1] - ind[0]) / cfg.sfreq
+                    duration = (ind[1] - ind[0]) / config.sfreq
                     recov.append([loc[epoch],chan[epoch],ep[epoch],ids[epoch],start,end,duration])
                     count[epoch] =  count[epoch]+1
     return recov
@@ -45,13 +45,13 @@ def pow_chars(electrode):
 def cycler_worker(t, toE):
     from bycycle.features import compute_features
     import numpy as np
-    import config as cfg
+    import config
     import warnings
     warnings.filterwarnings("ignore")
     from scipy import stats
     loc, chan, ep, e, a, f, p, tf, ts, b, ids = cfg.trials[t]       
-    toEvaluate = cfg.whichToEval[toE]
-    signalFeats = compute_features(e, cfg.sfreq, 
+    toEvaluate = config.whichToEval[toE]
+    signalFeats = compute_features(e, config.sfreq, 
                               cfg.f_beta, threshold_kwargs={'amp_fraction_threshold': toEvaluate[0], 
                                                             'amp_consistency_threshold': toEvaluate[1],
                                                             'period_consistency_threshold': toEvaluate[2],
@@ -72,7 +72,7 @@ def cycler_worker(t, toE):
                 count = count+1
                 
     stat        = stats.spearmanr(pred[cfg.keeps],a[cfg.keeps]).correlation
-    toSend      = cfg.bop_recov[cfg.bop_recov['ids'] == ids].values.tolist()   
+    toSend      = config.bop_recov[config.bop_recov['ids'] == ids].values.tolist()   
     boc_u,boc_c   = out_and_in(recov,toSend)
     bop_u,bop_c   = out_and_in(toSend,recov)
     bop_uniq     = collect_chars_split(bop_u).dropna()
@@ -82,7 +82,7 @@ def cycler_worker(t, toE):
     return  loc, chan, ep, ids, t, toE, stat, count, boc_uniq, boc_co, bop_uniq, bop_co
 #%%
 def out_and_in(outside,inside):
-    share_percent = 0.001
+    share_percent = 0.5
     import numpy as np
     o_uniq=[]
     com=[]
@@ -108,10 +108,10 @@ def out_and_in(outside,inside):
 def collect_chars_split(which):
     import numpy as np
     import pandas as pd
-    import config as cfg
+    import config
     m = []
     for whichBurst in which:
-        sess = cfg.trials[whichBurst[3]]
+        sess = config.trials[whichBurst[3]]
         locations = np.arange(whichBurst[4], whichBurst[5])
         freq = sess[5][locations]
         freq[freq == 0] = np.nan
