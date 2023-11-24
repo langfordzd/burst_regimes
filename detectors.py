@@ -49,10 +49,10 @@ def cycler_worker(t, toE):
     import warnings
     warnings.filterwarnings("ignore")
     from scipy import stats
-    loc, chan, ep, e, a, f, p, tf, ts, b, ids = cfg.trials[t]       
+    loc, chan, ep, e, a, f, p, tf, ts, b, ids = config.trials[t]       
     toEvaluate = config.whichToEval[toE]
     signalFeats = compute_features(e, config.sfreq, 
-                              cfg.f_beta, threshold_kwargs={'amp_fraction_threshold': toEvaluate[0], 
+                              config.f_beta, threshold_kwargs={'amp_fraction_threshold': toEvaluate[0], 
                                                             'amp_consistency_threshold': toEvaluate[1],
                                                             'period_consistency_threshold': toEvaluate[2],
                                                             'monotonicity_threshold': toEvaluate[3],
@@ -66,12 +66,12 @@ def cycler_worker(t, toE):
         for num, whichBurst in enumerate(burst_list):
             start = min(whichBurst['sample_last_trough'])
             end = max(whichBurst['sample_next_trough'])              
-            if start in cfg.keeps-10 and end in cfg.keeps+10:
-                recov.append([loc, chan, ep, ids, start, end, (end-start)/cfg.sfreq])
+            if start in config.keeps-10 and end in config.keeps+10:
+                recov.append([loc, chan, ep, ids, start, end, (end-start)/config.sfreq])
                 pred[start:end] = 1
                 count = count+1
                 
-    stat        = stats.spearmanr(pred[cfg.keeps],a[cfg.keeps]).correlation
+    stat        = stats.spearmanr(pred[config.keeps],a[config.keeps]).correlation
     toSend      = config.bop_recov[config.bop_recov['ids'] == ids].values.tolist()   
     boc_u,boc_c   = out_and_in(recov,toSend)
     bop_u,bop_c   = out_and_in(toSend,recov)
