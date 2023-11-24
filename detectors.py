@@ -6,7 +6,7 @@ Created on Mon May  9 15:20:44 2022
 @author: zachary
 """
 #%%
-def pow_chars_(electrode):
+def pow_chars_old(electrode):
     
     import numpy as np
     import config
