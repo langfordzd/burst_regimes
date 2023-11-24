@@ -72,14 +72,14 @@ def cycler_worker(t, toE):
                 count = count+1
                 
     stat        = stats.spearmanr(pred[cfg.keeps],a[cfg.keeps]).correlation
-    toSend      = cfg.pt_recov[cfg.pt_recov['ids'] == ids].values.tolist()   
-    cc_u,cc_c   = out_and_in(recov,toSend)
-    pt_u,pt_c   = out_and_in(toSend,recov)
-    pt_uniq     = collect_chars_split(pt_u).dropna()
-    cc_uniq     = collect_chars_split(cc_u).dropna() 
-    cc_co       = collect_chars_split(cc_c).dropna()
-    pt_co       = collect_chars_split(pt_c).dropna()    
-    return  loc, chan, ep, ids, t, toE, stat, count, cc_uniq, cc_co, pt_uniq, pt_co
+    toSend      = cfg.bop_recov[cfg.pt_recov['ids'] == ids].values.tolist()   
+    boc_u,boc_c   = out_and_in(recov,toSend)
+    bop_u,bop_c   = out_and_in(toSend,recov)
+    bop_uniq     = collect_chars_split(bop_u).dropna()
+    boc_uniq     = collect_chars_split(boc_u).dropna() 
+    boc_co       = collect_chars_split(boc_c).dropna()
+    bop_co       = collect_chars_split(bop_c).dropna()    
+    return  loc, chan, ep, ids, t, toE, stat, count, boc_uniq, boc_co, bop_uniq, bop_co
 #%%
 def out_and_in(outside,inside):
     share_percent = 0.001
